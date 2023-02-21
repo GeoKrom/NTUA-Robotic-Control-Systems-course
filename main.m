@@ -43,7 +43,8 @@ N = numel(t);
 p_d = [x1*ones(1,N); y1; z1*ones(1,N)];
 q_out = zeros(6,N);
 q_out_dot = zeros(6,N);
-p_comp = zeros(N, 3)';
+p_comp = zeros(3,N);
+p_comp_dot = zeros(3,N);
 i = 0;
 
 
@@ -58,36 +59,37 @@ i = 0;
 for t_sim = t
       i = i + 1;
       [~, p_comp(:,i)] = KUKA_6DOF_Forward_Kinematics(q_out(:,i),l);
+
 end
 
 
 %% Plots
 figure(1);
 subplot(3,1,1);
-plot(t, p_comp(1,:), 'r-');
+plot(t, p_comp(1,:), 'b-');
 grid;
 hold on;
-plot(t, x1*ones(1,N), 'b.');
+plot(t, x1*ones(1,N), 'r-.');
 xlabel("time [sec]");
 ylabel("x(t) [m]");
 legend('Computed', 'Desired', 'Location', 'Southwest');
 hold off;
 
 subplot(3,1,2);
-plot(t, p_comp(2,:), 'r-');
+plot(t, p_comp(2,:), 'b-');
 grid;
 hold on;
-plot(t, y1, 'b.');
+plot(t, y1, 'r-.');
 xlabel("time [sec]");
 ylabel("y(t) [m]");
 legend('Computed', 'Desired', 'Location', 'Northwest');
 hold off;
 
 subplot(3,1,3);
-plot(t, p_comp(3,:), 'r-');
+plot(t, p_comp(3,:), 'b-');
 grid;
 hold on;
-plot(t, z1*ones(1,N), 'b.');
+plot(t, z1*ones(1,N), 'r-.');
 xlabel("time [sec]");
 ylabel("z(t) [m]");
 legend('Computed', 'Desired', 'Location', 'Northwest');

@@ -6,7 +6,7 @@ function [A0E, End_Effector_Position] = KUKA_6DOF_Forward_Kinematics(q, len)
 
 % Matrix from Frame 0 to Frame 1
 A01 = [cos(q(1))  0   -sin(q(1))  len(2)*cos(q(1));
-       sin(q(1))  0    cos(q(1))  len(2)*cos(q(1));
+       sin(q(1))  0    cos(q(1))  len(2)*sin(q(1));
        0         -1    0          len(1);
        0          0    0          1];
 % Matrix from Frame 1 to Frame 2
