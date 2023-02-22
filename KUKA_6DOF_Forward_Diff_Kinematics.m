@@ -9,28 +9,24 @@ c1 = cos(q(1));
 s1 = sin(q(1));
 c2 = cos(q(2));
 s2 = sin(q(2));
-c3 = cos(q(3));
-s3 = sin(q(3));
 c23 = cos(q(2) + q(3));
 s23 = sin(q(2) + q(3));
 le = len(4) + len(7);
-d = l(2) + l(3)*s2 + l(5)*s23 + (l(6)+l(8))*c23;
-k = l(3)*c2 + l(5)*c23 - (l(6)+l(8))*s23;
+d = len(2) + len(3)*s2 + len(5)*s23 + (len(6) + len(8))*c23;
+k = len(3)*c2 + len(5)*c23 - (len(6) + len(8))*s23;
 
 %% Compute Linear Velocity Jacobian Submatrix
 JL11 = -(d*s1 + le*c1);
 JL12 = k*c1;
-JL13 = (k - len(3)*c2);
-JL21 = d*c1 - len*s1;
+JL13 = (k - len(3)*c2)*c1;
+JL21 = d*c1 - le*s1;
 JL22 = k*s1;
-JL23 = (k - len(3)*c2);
+JL23 = (k - len(3)*c2)*s1;
 JL31 = 0;
 JL32 = len(2) - d;
 JL33 = len(2) + len(3)*s2 - k;
 
-JL = [JL11 JL12 JL13;
-      JL21 JL22 JL23;
-      JL31 JL32 JL33];
+JL = [JL11 JL12 JL13; JL21 JL22 JL23; JL31 JL32 JL33];
 
 %% Compute Angular Velocity Jacobian Submatrix
 
@@ -44,9 +40,7 @@ JA31 = 1;
 JA32 = 0;
 JA33 = 0;
 
-JA = [JA11 JA12 JA13;
-      JA21 JA22 JA23;
-      JA31 JA32 JA33];
+JA = [JA11 JA12 JA13; JA21 JA22 JA23; JA31 JA32 JA33];
 
 %% Jacobian Matrix
 J = [JL; JA];

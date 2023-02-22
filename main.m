@@ -42,7 +42,8 @@ l = [l0, l1, l2, l3, l4, l5, l6, l7];
 N = numel(t);
 p_d = [x1*ones(1,N); y1; z1*ones(1,N)];
 q_out = zeros(6,N);
-q_out_dot = zeros(6,N);
+q_out_dot = zeros(3,N);
+v_d = [zeros(1,N); y1_dot; zeros(1,N)];
 p_comp = zeros(3,N);
 p_comp_dot = zeros(3,N);
 i = 0;
@@ -52,7 +53,6 @@ for t_sim = t
    
     i = i + 1;
     q_out(:,i) = KUKA_6DOF_Inverse_Kinematics(p_d(:,i),l);
-    %q_out_dot(:,i) = (q_out(:,i+1) - q_out(:,i))/dt;
 
 end
 i = 0;
@@ -62,7 +62,21 @@ for t_sim = t
 
 end
 
+i = 0;
+for t_sim = t
 
+    i = i + 1;
+    [q_out_dot(:, i), ~] = KUKA_6DOF_Inverse_Diff_Kinematics(q_out(:, i), v_d(:,i), l);
+
+end
+
+i = 0;
+for t_sim = t
+
+    i = i + 1;
+    [p_comp_dot(:, i), ~, ~] = KUKA_6DOF_Forward_Diff_Kinematics(q_out(:, i), q_out_dot(:, i), l);
+
+end
 %% Plots
 figure(1);
 subplot(3,1,1);
@@ -97,6 +111,38 @@ hold off;
 
 figure(2);
 subplot(3,1,1);
+plot(t, p_comp_dot(1,:), 'b-');
+grid;
+hold on;
+plot(t, zeros(1,N), 'r-.');
+xlabel("time [sec]");
+ylabel("v_x(t) [m/sec]");
+legend('Computed', 'Desired', 'Location', 'Southwest');
+hold off;
+
+subplot(3,1,2);
+plot(t, p_comp_dot(2,:), 'b-');
+grid;
+hold on;
+plot(t, y1_dot, 'r-.');
+xlabel("time [sec]");
+ylabel("v_y(t) [m/sec]");
+legend('Computed', 'Desired', 'Location', 'Southwest');
+hold off;
+
+subplot(3,1,3);
+plot(t, p_comp_dot(3,:), 'b-');
+grid;
+hold on;
+plot(t, zeros(1,N), 'r-.');
+xlabel("time [sec]");
+ylabel("v_z(t) [m/sec]");
+legend('Computed', 'Desired', 'Location', 'Southwest');
+hold off;
+
+
+figure(3);
+subplot(3,1,1);
 plot(t, q_out(1,:), 'r-');
 grid;
 xlabel("time [sec]");
@@ -113,3 +159,22 @@ plot(t, q_out(3,:), 'r-');
 grid;
 xlabel("time [sec]");
 ylabel("q_3(t) [rad]");
+
+figure(4);
+subplot(3,1,1);
+plot(t, q_out_dot(1,:), 'r-');
+grid;
+xlabel("time [sec]");
+ylabel("qvel_1(t) [rad/sec]");
+
+subplot(3,1,2);
+plot(t, q_out_dot(2,:), 'r-');
+grid;
+xlabel("time [sec]");
+ylabel("qvel_2(t) [rad/sec]");
+
+subplot(3,1,3);
+plot(t, q_out_dot(3,:), 'r-');
+grid;
+xlabel("time [sec]");
+ylabel("qvel_3(t) [rad/sec]");
