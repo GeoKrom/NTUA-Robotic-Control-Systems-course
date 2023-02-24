@@ -24,9 +24,11 @@ JL22 = k*s1;
 JL23 = (k - len(3)*c2)*s1;
 JL31 = 0;
 JL32 = len(2) - d;
-JL33 = len(2) + len(3)*s2 - k;
+JL33 = len(2) + len(3)*s2 - d;
 
-JL = [JL11 JL12 JL13; JL21 JL22 JL23; JL31 JL32 JL33];
+JL = [JL11 JL12 JL13; 
+      JL21 JL22 JL23; 
+      JL31 JL32 JL33];
 
 %% Compute Angular Velocity Jacobian Submatrix
 
@@ -40,7 +42,9 @@ JA31 = 1;
 JA32 = 0;
 JA33 = 0;
 
-JA = [JA11 JA12 JA13; JA21 JA22 JA23; JA31 JA32 JA33];
+JA = [JA11 JA12 JA13; 
+      JA21 JA22 JA23; 
+      JA31 JA32 JA33];
 
 %% Jacobian Matrix
 J = [JL; JA];
