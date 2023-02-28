@@ -19,8 +19,8 @@ k = len(3)*c2 + len(5)*c23 - (len(6) + len(8))*s23;
 
 %% Inverse Linear Velocity Jacobian Submatrix
 
-adj_JL11 = -(len(5)*s3 +(len(6) + len(8))*c3)*len(3)*s1;
-adj_JL12 = (len(5)*s3 +(len(6) + len(8))*c3)*len(3)*c1;
+adj_JL11 = (k*s2 + (len(2) - d)*c2)*len(3)*s1;
+adj_JL12 = -(k*s2 + (len(2) - d)*c2)*len(3)*c1;
 adj_JL13 = 0;
 adj_JL21 = -(d*c1 - le*s1)*(len(2) + len(3)*s2 - d);
 adj_JL22 = -(d*c1 + le*s1)*(len(2) + len(3)*s2 - d);

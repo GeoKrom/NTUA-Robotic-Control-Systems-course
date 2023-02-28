@@ -1,6 +1,7 @@
 %% Robot Simulation file
 
 clear;
+close all;
 clc;
 clf;
 tic;
@@ -24,7 +25,7 @@ tf = 10.0;                              % sec
 t = 0:dt:tf;
 t1 = 0:dt:20;
 t2 = 10:dt:20;
-kmax=tf/dt + 1;
+kmax = (2*tf)/dt + 1;
 
 % Trajectories 
 disp("Initialising Desired Task-Space Trajectory (Motion Profile) ...");
@@ -92,12 +93,12 @@ disp("Start of computation for joint and end effector position & velocity...");
 disp(" ");
 
 % Usage of Incremental Algorithm
-K = 0.00001*eye(3);
+K = [0.000008,0.000001, 0.000005]*eye(3);
 i = 0;
 % Compute first position and velocity
 
 q_out(:,1) = KUKA_6DOF_Inverse_Kinematics(p_d(:,1), l);
-[~, p_comp(:,1)] = KUKA_6DOF_Forward_Kinematics(q_out(:,1), l);
+[A01, A02, A03, A04, A05, A0E, p_comp(:,1)] = KUKA_6DOF_Forward_Kinematics(q_out(:,1), l);
 
 % Compute the rest points
 for t_sim = t1
@@ -105,22 +106,21 @@ for t_sim = t1
     % Algorithm for computing joint position and velocity as well end
     % effector position and velocity
     i = i + 1;
-    if i < size(p_d,2) 
-        % A different approach of the algorithm
-        % Siciliano book, page 132, uses a gain parameter for position
-        % error computation
-        Dp_dot(:,i) = K*(p_d(:,i) - p_comp(:,i)) + v_d(:,i);
-    end
+    % A different approach of the algorithm
+    % Siciliano book, page 132, uses a gain parameter for position error computation
+    Dp_dot(:,i) = K*(p_d(:,i) - p_comp(:,i)) + v_d(:,i);
+
     % Compute joint velocities
     [q_out_dot(:,i), ~] = KUKA_6DOF_Inverse_Diff_Kinematics(q_out(:,i), Dp_dot(:,i), l);
 
-    if i ~= 1
-        % Compute joint positions 
+   
+     % Compute joint positions
+     if i ~= 1
         q_out(:,i) = q_out(:,i-1) + [q_out_dot(:,i-1); 0; 0; 0]*dt;
-    end
+     end
     % Compute end effector position and velocity
     [p_comp_dot(:,i), ~, ~] = KUKA_6DOF_Forward_Diff_Kinematics(q_out(:,i), q_out_dot(:,i), l);
-    [~, p_comp(:,i)] = KUKA_6DOF_Forward_Kinematics(q_out(:,i), l);
+    [A01(:,:,i), A02(:,:,i), A03(:,:,i), A04(:,:,i), A05(:,:,i), A0E(:,:,i), p_comp(:,i)] = KUKA_6DOF_Forward_Kinematics(q_out(:,i), l);
 
 end
 
@@ -132,30 +132,29 @@ disp(" ");
 
 %% End effector and Joint Plots %%
 
-% KUKA_6DOF_Plots(t1, p_comp, x1, N, t, y1, t2, y2, z1, p_comp_dot, y1_dot, y2_dot, q_out, q_out_dot);
+KUKA_6DOF_Plots(t1, p_comp, x1, N, t, y1, t2, y2, z1, p_comp_dot, y1_dot, y2_dot, q_out, q_out_dot);
 
 %% Robot KUKA plot %%
-
-figure(5);
- 
+figure(1);
+clf;
 axis([-1 1 -0.5 0.5 0 2.0]); 
+[x,y] = meshgrid(-1:0.1:1,-0.5:0.1:0.5);
+z = 0*x + 0*y;
+surf(x, y, z);
 axis on;
 grid on;
 hold on;
+plot3(p_d(1,:), p_d(2,:), p_d(3,:),"k-","LineWidth",2);
 xlabel("x (m)");
 ylabel("y (m)");
 zlabel("z (m)");
-plot3(p_d(:,1),p_d(:,2),p_d(:,3),'k-');
-dtk = 10000;
-plot3([0],[0],[0],"g*");
-line([0],[0],[l0],'Color','k');
-plot3([0],[0],[l0],"g*");
-%plot3([0],[0],[l0],"k-");
-plot3([l1],[0],[l0],"g*");
-plot3([l1],[l3],[l0],"g*");
-plot3([l1],[l3],[l0+l2],"g*");
-plot3([l1],[0],[l0+l2],"g*");
-plot3([l1],[0],[l0+l2+l4],"g*");
-plot3([l1+l5],[0],[l0+l2+l4],"g*");
-plot3([l1+l5],[0],[l0+l2+l4],"g*");
-plot3([l1+l5+l7],[l6],[l0+l2+l4],"g*");
+
+for tk = 1:2500:length(t1)
+    
+    plot3([0 A01(1,4,tk)], [0 A01(2,4,tk)], [0 A01(3,4,tk)], [A01(1,4,tk) A02(1,4,tk)], [A01(2,4,tk) A02(2,4,tk)], [A01(3,4,tk) A02(3,4,tk)],...
+          [A02(1,4,tk) A03(1,4,tk)], [A02(2,4,tk) A03(2,4,tk)], [A02(3,4,tk) A03(3,4,tk)], [A03(1,4,tk) A04(1,4,tk)], [A03(2,4,tk) A04(2,4,tk)],...
+          [A03(3,4,tk) A04(3,4,tk)], [A04(1,4,tk) A05(1,4,tk)], [A04(2,4,tk) A05(2,4,tk)], [A04(3,4,tk) A05(3,4,tk)], [A05(1,4,tk) A0E(1,4,tk)],...
+          [A05(2,4,tk) A0E(2,4,tk)], [A05(3,4,tk) A0E(3,4,tk)], "Marker", "*", "LineStyle", '-');
+    pause(0.01);
+
+end

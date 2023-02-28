@@ -1,6 +1,6 @@
 function KUKA_6DOF_Plots(t1, p_comp, x1, N, t, y1, t2, y2, z1, p_comp_dot, y1_dot, y2_dot, q_out, q_out_dot)
 
-    figure(1);
+    figure(2);
     subplot(3,1,1);
     plot(t1, p_comp(1,:), 'b-');
     grid;
@@ -32,7 +32,7 @@ function KUKA_6DOF_Plots(t1, p_comp, x1, N, t, y1, t2, y2, z1, p_comp_dot, y1_do
     legend('Computed', 'Desired', 'Location', 'Northwest');
     hold off;
 
-    figure(2);
+    figure(3);
     subplot(3,1,1);
     plot(t1, p_comp_dot(1,:), 'b-');
     grid;
@@ -65,7 +65,7 @@ function KUKA_6DOF_Plots(t1, p_comp, x1, N, t, y1, t2, y2, z1, p_comp_dot, y1_do
     hold off;
 
 
-    figure(3);
+    figure(4);
     subplot(3,1,1);
     plot(t1, q_out(1,:), 'r-');
     grid;
@@ -84,7 +84,7 @@ function KUKA_6DOF_Plots(t1, p_comp, x1, N, t, y1, t2, y2, z1, p_comp_dot, y1_do
     xlabel("time [sec]");
     ylabel("q_3(t) [rad]");
 
-    figure(4);
+    figure(5);
     subplot(3,1,1);
     plot(t1, q_out_dot(1,:), 'r-');
     grid;

@@ -1,4 +1,4 @@
-function [A0E, End_Effector_Position] = KUKA_6DOF_Forward_Kinematics(q, len)
+function [A01, A02, A03, A04, A05, A0E, End_Effector_Position] = KUKA_6DOF_Forward_Kinematics(q, len)
 
 % KUKA_6DOF_Forward_Kinematics 
 % Input : Joint Position, link length 
@@ -35,6 +35,10 @@ A5E = [cos(q(6))  -sin(q(6))  0    0;
        0           0          1    len(8);
        0           0          0    1];
 
+A02 = A01*A12;
+A03 = A02*A23;
+A04 = A03*A34;
+A05 = A04*A45;
 A0E = A01*A12*A23*A34*A45*A5E;
 End_Effector_Position = A0E(1:3,4);
 end
