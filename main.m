@@ -130,10 +130,6 @@ disp(" ");
 disp("Kinematic loop has ended...");
 disp(" ");
 
-%% End effector and Joint Plots %%
-
-KUKA_6DOF_Plots(t1, p_comp, x1, N, t, y1, t2, y2, z1, p_comp_dot, y1_dot, y2_dot, q_out, q_out_dot);
-
 %% Robot KUKA plot %%
 figure(1);
 clf;
@@ -149,12 +145,16 @@ xlabel("x (m)");
 ylabel("y (m)");
 zlabel("z (m)");
 
-for tk = 1:2500:length(t1)
+for tk = 1:2000:length(t1)
     
     plot3([0 A01(1,4,tk)], [0 A01(2,4,tk)], [0 A01(3,4,tk)], [A01(1,4,tk) A02(1,4,tk)], [A01(2,4,tk) A02(2,4,tk)], [A01(3,4,tk) A02(3,4,tk)],...
           [A02(1,4,tk) A03(1,4,tk)], [A02(2,4,tk) A03(2,4,tk)], [A02(3,4,tk) A03(3,4,tk)], [A03(1,4,tk) A04(1,4,tk)], [A03(2,4,tk) A04(2,4,tk)],...
           [A03(3,4,tk) A04(3,4,tk)], [A04(1,4,tk) A05(1,4,tk)], [A04(2,4,tk) A05(2,4,tk)], [A04(3,4,tk) A05(3,4,tk)], [A05(1,4,tk) A0E(1,4,tk)],...
           [A05(2,4,tk) A0E(2,4,tk)], [A05(3,4,tk) A0E(3,4,tk)], "Marker", "*", "LineStyle", '-');
-    pause(0.01);
+    pause(0.0001);
 
 end
+
+%% End effector and Joint Plots %%
+
+KUKA_6DOF_Plots(t1, p_comp, x1, N, t, y1, t2, y2, z1, p_comp_dot, y1_dot, y2_dot, q_out, q_out_dot);
